@@ -1,30 +1,30 @@
 package com.iiex.cost_share_service.entities;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Entity
+@Table(name = "Contributions")
 public class Contribution {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contributionId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private double amount;
+    private Double amount;
     private LocalDateTime contributionDate;
 
-    // Getters and setters...
+    // Getters and Setters
 }
