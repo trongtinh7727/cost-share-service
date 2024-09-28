@@ -1,0 +1,15 @@
+<!-- src/main/resources/templates/otp-email.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your OTP Code</title>
+</head>
+<body>
+    <h3>Hello,</h3>
+    <p>Thank you for registering. Your OTP code is:</p>
+    <h2 style="color: #2E86C1;">[[${otp}]]</h2>
+    <p>This OTP is valid for [[${expiryMinutes}]] minutes.</p>
+    <br/>
+    <p>Regards,<br/>IIEX - Cost Share</p>
+</body>
+</html>
