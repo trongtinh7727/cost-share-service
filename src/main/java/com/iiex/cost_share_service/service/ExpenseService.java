@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iiex.cost_share_service.entities.Expense;
-import com.iiex.cost_share_service.repositories.ExpenseRepository;
+import com.iiex.cost_share_service.entity.Expense;
+import com.iiex.cost_share_service.repository.ExpenseRepository;
 
 @Service
 public class ExpenseService {

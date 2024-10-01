@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.iiex.cost_share_service.entities.Expense;
+import com.iiex.cost_share_service.entity.Expense;
 import com.iiex.cost_share_service.service.ExpenseService;
 
 @RestController

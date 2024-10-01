@@ -1,7 +1,7 @@
-package com.iiex.cost_share_service.entities;
+package com.iiex.cost_share_service.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "GroupMember")
-public class GroupMember {
+@Table(name = "Contributions")
+public class Contribution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long groupMemberId;
+    private Long contributionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -23,10 +23,8 @@ public class GroupMember {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime joinDate;
-
-    @Column(name = "role")
-    private Integer role; // 1: Admin, 2: Member
+    private Double amount;
+    private LocalDateTime contributionDate;
 
     // Getters and Setters
 }

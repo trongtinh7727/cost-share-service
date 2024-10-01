@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.entities;
+package com.iiex.cost_share_service.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

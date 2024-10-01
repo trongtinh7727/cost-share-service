@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iiex.cost_share_service.entities.User;
+import com.iiex.cost_share_service.entity.User;
 import com.iiex.cost_share_service.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;

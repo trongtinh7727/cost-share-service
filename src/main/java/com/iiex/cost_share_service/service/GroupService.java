@@ -3,12 +3,12 @@ package com.iiex.cost_share_service.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iiex.cost_share_service.entities.Group;
-import com.iiex.cost_share_service.entities.GroupMember;
-import com.iiex.cost_share_service.entities.User;
-import com.iiex.cost_share_service.repositories.GroupMemberRepository;
-import com.iiex.cost_share_service.repositories.GroupRepository;
-import com.iiex.cost_share_service.repositories.UserRepository;
+import com.iiex.cost_share_service.entity.Group;
+import com.iiex.cost_share_service.entity.GroupMember;
+import com.iiex.cost_share_service.entity.User;
+import com.iiex.cost_share_service.repository.GroupMemberRepository;
+import com.iiex.cost_share_service.repository.GroupRepository;
+import com.iiex.cost_share_service.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
