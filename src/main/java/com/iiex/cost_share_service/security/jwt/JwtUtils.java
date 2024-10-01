@@ -1,6 +1,10 @@
 package com.iiex.cost_share_service.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -15,6 +19,8 @@ import org.springframework.stereotype.Component;
 import com.iiex.cost_share_service.security.user.CustomUserDetails;
 
 import org.springframework.security.core.Authentication;
+
+import static io.jsonwebtoken.Jwts.parserBuilder;
 
 @Component
 public class JwtUtils {
@@ -35,7 +41,7 @@ public class JwtUtils {
                 .claim("role", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date().getTime() + expirationTime)))
-                .signWith(SignatureAlgorithm.HS256, key())
+                .signWith(key())
                 .compact();
     }
 
@@ -44,8 +50,9 @@ public class JwtUtils {
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parser()
+        return parserBuilder()
                 .setSigningKey(key())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -53,11 +60,11 @@ public class JwtUtils {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(key())
+            parserBuilder().setSigningKey(key())
+                    .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
                 | IllegalArgumentException e) {
             throw new JwtException(e.getMessage());
         }

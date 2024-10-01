@@ -60,8 +60,8 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy((SessionCreationPolicy.STATELESS)))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/").authenticated()
-                        .anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated());
         httpSecurity.authenticationProvider(daoAuthenticationProvider());
         httpSecurity.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

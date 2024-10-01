@@ -111,11 +111,11 @@ public class AuthService {
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
+            otpRepository.delete(otp);
             Authentication authentication = authorizationManager
                     .authenticate(
-                            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
             String token = jwtUtils.generateTokenForUser(authentication);
-            otpRepository.delete(otp);
             return new CreateUserResponse(token);
         }
     }
@@ -125,7 +125,6 @@ public class AuthService {
         Authentication authentication = authorizationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         String token = jwtUtils.generateTokenForUser(authentication);
-        CustomUserDetails userDetail =  (CustomUserDetails) authentication.getPrincipal();
         return new CreateUserResponse(token);
     }
 
