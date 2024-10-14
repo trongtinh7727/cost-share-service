@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.dto;
+package com.iiex.cost_share_service.dto.request;
 
 import com.iiex.cost_share_service.utils.enums.VerifyType;
 
@@ -12,16 +12,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-public class VerifyOTPRequest {
+@AllArgsConstructor
+public class SendVerifyCodeRequest {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
-    @NotBlank(message = "OTP is required")
-    private String otp;
     @NotNull(message = "VerifyType cannot be null")
     @Enumerated(EnumType.STRING)
     private VerifyType verifyType;

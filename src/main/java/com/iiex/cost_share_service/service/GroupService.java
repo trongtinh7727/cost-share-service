@@ -10,6 +10,7 @@ import com.iiex.cost_share_service.repository.GroupMemberRepository;
 import com.iiex.cost_share_service.repository.GroupRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,17 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
-    public Group createGroup(Group group) {
+    public Group createGroup(String groupName, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Group group = new Group();
+        group.setGroupName(groupName);
+        group.setCreatedBy(user);
+        group.setCreatedAt(LocalDateTime.now());
         return groupRepository.save(group);
+    }
+
+    public List<Group> getGroupsByUser(Long userId) {
+        return groupRepository.findByCreatedByUserId(userId);
     }
 
     public Group getGroupById(Long groupId) {
@@ -41,21 +51,27 @@ public class GroupService {
         groupRepository.deleteById(groupId);
     }
 
-    public String addMemberToGroupByEmail(Long groupId, String email) {
-        Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(email));
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            Group group = getGroupById(groupId);
-            if (group != null) {
-                GroupMember groupMember = new GroupMember();
-                groupMember.setGroup(group);
-                groupMember.setUser(user);
-                groupMemberRepository.save(groupMember);
-                return "User added to group.";
-            } else {
-                return "Group not found.";
-            }
+    public GroupMember addUserToGroupByEmail(Long groupId, String email) {
+        // Tìm nhóm theo id
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        // Tìm người dùng theo email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
+
+        // Kiểm tra nếu người dùng đã là thành viên của nhóm
+        boolean isMemberAlready = groupMemberRepository.existsByGroupAndUser(group, user);
+        if (isMemberAlready) {
+            throw new RuntimeException("User is already a member of the group");
         }
-        return "User with email " + email + " not found.";
+
+        // Thêm người dùng vào nhóm
+        GroupMember groupMember = new GroupMember();
+        groupMember.setGroup(group);
+        groupMember.setUser(user);
+        groupMember.setJoinedAt(LocalDateTime.now());
+
+        return groupMemberRepository.save(groupMember);
     }
 }

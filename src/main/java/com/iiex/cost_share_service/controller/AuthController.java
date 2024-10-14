@@ -7,14 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.iiex.cost_share_service.dto.CreateUserRequest;
-import com.iiex.cost_share_service.dto.CreateUserResponse;
-import com.iiex.cost_share_service.dto.LoginRequest;
-import com.iiex.cost_share_service.dto.SendVerifyCodeRequest;
-import com.iiex.cost_share_service.dto.SendVerifyCodeResponse;
-import com.iiex.cost_share_service.dto.VerifyOTPRequest;
-import com.iiex.cost_share_service.dto.VerifyOTPResponse;
+import com.iiex.cost_share_service.dto.request.CreateUserRequest;
+import com.iiex.cost_share_service.dto.request.LoginRequest;
+import com.iiex.cost_share_service.dto.request.SendVerifyCodeRequest;
+import com.iiex.cost_share_service.dto.request.VerifyOTPRequest;
+import com.iiex.cost_share_service.dto.response.ApiResponse;
+import com.iiex.cost_share_service.dto.response.CreateUserResponse;
 import com.iiex.cost_share_service.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -27,14 +25,14 @@ public class AuthController {
 
     // registry
     @PostMapping("/registry/send-otp")
-    public ResponseEntity<SendVerifyCodeResponse> sendVerifyOTP(@Valid @RequestBody SendVerifyCodeRequest codeRequest) {
-        SendVerifyCodeResponse response = authService.createOtp(codeRequest);
+    public ResponseEntity<ApiResponse<?>> sendVerifyOTP(@Valid @RequestBody SendVerifyCodeRequest codeRequest) {
+        ApiResponse<?> response = authService.createOtp(codeRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/registry/verify-otp")
-    public ResponseEntity<VerifyOTPResponse> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
-        VerifyOTPResponse response = authService.validateOtp(request);
+    public ResponseEntity<ApiResponse<?>> verifyOTP(@Valid @RequestBody VerifyOTPRequest request) {
+        ApiResponse<?> response = authService.validateOtp(request);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 

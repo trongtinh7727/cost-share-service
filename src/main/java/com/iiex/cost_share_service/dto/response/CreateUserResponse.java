@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.dto;
+package com.iiex.cost_share_service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

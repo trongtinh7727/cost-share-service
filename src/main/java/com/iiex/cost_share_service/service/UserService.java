@@ -1,6 +1,7 @@
 package com.iiex.cost_share_service.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public User getUserByEmail(String email){
+    public Optional<User> getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
 

@@ -11,22 +11,18 @@ import lombok.Setter;
 @Entity
 @Table(name = "GroupMember")
 public class GroupMember {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long groupMemberId;
+    @EmbeddedId
+    private GroupMemberKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @ManyToOne
+    @MapsId("groupId")
+    @JoinColumn(name = "group_id")
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime joinDate;
-
-    @Column(name = "role")
-    private Integer role; // 1: Admin, 2: Member
-
-    // Getters and Setters
+    private LocalDateTime joinedAt;
 }

@@ -19,12 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.iiex.cost_share_service.security.jwt.AuthTokenFilter;
 import com.iiex.cost_share_service.security.jwt.JwtAuthEntryPoint;
 import com.iiex.cost_share_service.security.user.CustomUserDetailService;
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Autowired
@@ -60,7 +57,8 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy((SessionCreationPolicy.STATELESS)))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**", "dấdad").permitAll()
                         .anyRequest().authenticated());
         httpSecurity.authenticationProvider(daoAuthenticationProvider());
         httpSecurity.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);

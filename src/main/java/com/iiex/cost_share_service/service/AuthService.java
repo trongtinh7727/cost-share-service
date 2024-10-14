@@ -7,22 +7,16 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iiex.cost_share_service.dto.CreateUserRequest;
-import com.iiex.cost_share_service.dto.CreateUserResponse;
-import com.iiex.cost_share_service.dto.LoginRequest;
-import com.iiex.cost_share_service.dto.SendVerifyCodeRequest;
-import com.iiex.cost_share_service.dto.SendVerifyCodeResponse;
-import com.iiex.cost_share_service.dto.VerifyOTPRequest;
-import com.iiex.cost_share_service.dto.VerifyOTPResponse;
+import com.iiex.cost_share_service.dto.request.*;
+import com.iiex.cost_share_service.dto.response.ApiResponse;
+import com.iiex.cost_share_service.dto.response.CreateUserResponse;
 import com.iiex.cost_share_service.entity.Otp;
 import com.iiex.cost_share_service.entity.User;
 import com.iiex.cost_share_service.exception.OtpValidationException;
 import com.iiex.cost_share_service.repository.OtpRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
 import com.iiex.cost_share_service.security.jwt.JwtUtils;
-import com.iiex.cost_share_service.security.user.CustomUserDetails;
 import com.iiex.cost_share_service.utils.enums.VerifyType;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,7 +49,7 @@ public class AuthService {
         return String.valueOf(otpInt);
     }
 
-    public SendVerifyCodeResponse createOtp(SendVerifyCodeRequest request) {
+    public ApiResponse<?> createOtp(SendVerifyCodeRequest request) {
         // Remove existing OTP if any
         List<Otp> existingOtps = otpRepository.findByEmailAndVerifyType(request.getEmail(), request.getVerifyType());
         existingOtps.forEach(otp -> otpRepository.deleteById(otp.getOtpId()));
@@ -69,10 +63,10 @@ public class AuthService {
         otpEntity.setVerifyType(request.getVerifyType());
         otpRepository.save(otpEntity);
         emailService.sendOtpEmail(request.getEmail(), otp);
-        return new SendVerifyCodeResponse("Sent OTP successfully. Please check your email for OTP.");
+        return new ApiResponse<>("Sent OTP successfully. Please check your email for OTP.");
     }
 
-    public VerifyOTPResponse validateOtp(VerifyOTPRequest verifyOTPRequest) {
+    public ApiResponse<?> validateOtp(VerifyOTPRequest verifyOTPRequest) {
         List<Otp> otpList = otpRepository.findByEmailAndVerifyType(verifyOTPRequest.getEmail(),
                 verifyOTPRequest.getVerifyType());
         if (otpList.isEmpty()) {
@@ -89,7 +83,7 @@ public class AuthService {
             // OTP is valid; set verified to true
             otpEntity.setIsVerified(true);
             otpRepository.save(otpEntity);
-            return new VerifyOTPResponse("Successfully");
+            return new ApiResponse<>("Successfully");
         }
     }
 

@@ -32,7 +32,7 @@ public class JwtUtils {
 
     public String generateTokenForUser(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        List<String> roles = userPrincipal.getAuthorities().stream()
+        List<String> roles = userPrincipal.getAuthorities().stream()    
                 .map(GrantedAuthority::getAuthority).toList();
 
         return Jwts.builder()
