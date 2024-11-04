@@ -1,9 +1,10 @@
-package com.iiex.cost_share_service.entities;
+package com.iiex.cost_share_service.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -27,14 +28,9 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    // Relationship with Groups
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Group> groups;
-
-    // Getters and Setters
 }

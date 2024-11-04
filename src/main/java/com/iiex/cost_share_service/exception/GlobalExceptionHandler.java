@@ -26,4 +26,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ExceptionResponse("An error occurred: " + ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(OtpValidationException.class)
+    public ResponseEntity<ExceptionResponse> handleOtpValidationException(OtpValidationException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

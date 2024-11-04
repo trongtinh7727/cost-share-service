@@ -1,10 +1,11 @@
-package com.iiex.cost_share_service.entities;
+package com.iiex.cost_share_service.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,17 +24,14 @@ public class Group {
     @Column(name = "group_name")
     private String groupName;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "userId")
+    private User createdBy;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Relationship with User
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-
-    // Relationship with GroupMember
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupMember> members;
-
-    // Getters and Setters
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Expense> expenses;
 }

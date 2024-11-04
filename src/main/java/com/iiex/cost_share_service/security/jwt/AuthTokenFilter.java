@@ -19,8 +19,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtils jwtUtils;
+
     @Autowired
     private CustomUserDetailService customUserDetailService;
 
@@ -29,6 +31,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+
+            if (isBypassUrl(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             if (StringUtils.hasText(jwt) && jwtUtils.validateToken(jwt)) {
                 String username = jwtUtils.getUsernameFromToken(jwt);
                 UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
@@ -38,14 +46,20 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(e.getMessage() + " invalid or expired token");
+            response.getWriter().write("Unauthorized: " + e.getMessage() + " (Invalid or expired token)");
             return;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write(e.getMessage());
+            response.getWriter().write("Internal Server Error: " + e.getMessage());
             return;
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isBypassUrl(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return requestURI.startsWith("/public") || requestURI.equals("/login") || requestURI.equals("/register");
     }
 
     private String parseJwt(HttpServletRequest request) {

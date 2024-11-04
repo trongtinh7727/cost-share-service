@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.iiex.cost_share_service.entities.User;
+import com.iiex.cost_share_service.entity.User;
 
 public class CustomUserDetails implements UserDetails{
 
@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails{
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
     
 }
