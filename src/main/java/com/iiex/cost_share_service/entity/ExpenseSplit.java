@@ -33,4 +33,6 @@ public class ExpenseSplit {
     private User user;
 
     private Double amount;
+
+    private boolean isPaid;
 }

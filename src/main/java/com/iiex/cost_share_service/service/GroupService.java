@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.iiex.cost_share_service.entity.Group;
 import com.iiex.cost_share_service.entity.GroupMember;
+import com.iiex.cost_share_service.entity.GroupMemberKey;
 import com.iiex.cost_share_service.entity.User;
 import com.iiex.cost_share_service.repository.GroupMemberRepository;
 import com.iiex.cost_share_service.repository.GroupRepository;
@@ -40,7 +41,7 @@ public class GroupService {
     }
 
     public List<Group> getGroupsByUser(Long userId) {
-        return groupRepository.findByCreatedByUserId(userId);
+        return groupRepository.findGroupsByUserId(userId);
     }
 
     public Group getGroupById(Long groupId) {
@@ -68,6 +69,8 @@ public class GroupService {
 
         // Thêm người dùng vào nhóm
         GroupMember groupMember = new GroupMember();
+        GroupMemberKey id = new GroupMemberKey(groupId, user.getUserId());
+        groupMember.setId(id);
         groupMember.setGroup(group);
         groupMember.setUser(user);
         groupMember.setJoinedAt(LocalDateTime.now());
