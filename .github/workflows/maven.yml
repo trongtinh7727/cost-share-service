@@ -8,6 +8,21 @@ jobs:
     build-deploy:
       name: build and deploy spring-api
       runs-on: ubuntu-20.04
+      services:
+        db:
+          image: mysql:8.0
+          env:
+            MYSQL_ROOT_PASSWORD: admin
+            MYSQL_DATABASE: cost-share
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin
+          ports:
+            - 3306:3306
+          options: >-
+            --health-cmd "mysqladmin ping --silent"
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 3
       steps:
         - name: checkout code
           uses: actions/checkout@v3
@@ -17,7 +32,13 @@ jobs:
           with:
             distribution: 'corretto'
             java-version: 17
-
+            
+        - name: Wait for MySQL to be ready
+          run: |
+            while ! mysqladmin ping -h"localhost" --silent; do
+              echo "Waiting for database connection..."
+              sleep 2
+            done
         - name: unit tests
           run: mvn -B test --file pom.xml
 
