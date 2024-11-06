@@ -63,7 +63,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorize"))
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/api/auth/login/oauth2/code/google")));
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/api/auth/login/oauth2/code/google"))
+                        .successHandler((request, response, authentication) -> {
+                            response.sendRedirect("/home");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect("/login?error=true");
+                        }));
 
         httpSecurity.authenticationProvider(daoAuthenticationProvider());
         httpSecurity.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
