@@ -18,11 +18,13 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     // Tạo chi tiêu
-    @PostMapping
+    @PostMapping("/group/{groupId}/user/{userId}")
     public ResponseEntity<ApiResponse<Expense>> createExpense(
+            @PathVariable Long groupId,
+            @PathVariable Long userId,
             @RequestBody CreateExpenseRequest request) {
         try {
-            Expense data = expenseService.createExpense(request.getExpense(), request.getGroupId(), request.getUserId(),
+            Expense data = expenseService.createExpense(request.getExpense(), groupId, userId,
                     request.getSplits());
             ApiResponse<Expense> response = new ApiResponse<>(200, "Expense created successfully", data);
             return ResponseEntity.ok(response);

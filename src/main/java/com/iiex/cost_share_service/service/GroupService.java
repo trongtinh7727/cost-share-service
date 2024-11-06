@@ -10,10 +10,8 @@ import com.iiex.cost_share_service.entity.User;
 import com.iiex.cost_share_service.repository.GroupMemberRepository;
 import com.iiex.cost_share_service.repository.GroupRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GroupService {

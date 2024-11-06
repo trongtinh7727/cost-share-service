@@ -1,37 +1,37 @@
 version: "3.1"
 
 services:
-  # Database
+  # PostgreSQL Database
   db:
-    image: mysql
+    image: postgres
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
     restart: always
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: cost-share
-      MYSQL_PASSWORD: admin
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cost-share
     networks:
-      - mysql-phpmyadmin
+      - postgres-network
 
-  # phpmyadmin
-  phpmyadmin:
+  # Admin tool (replace phpMyAdmin with pgAdmin for PostgreSQL)
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
     depends_on:
       - db
-    image: phpmyadmin
-    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8090:80"
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: admin
     networks:
-      - mysql-phpmyadmin
+      - postgres-network
 
 networks:
-  mysql-phpmyadmin:
+  postgres-network:
 
 volumes:
   db_data:

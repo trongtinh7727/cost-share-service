@@ -1,8 +1,13 @@
 package com.iiex.cost_share_service.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +23,7 @@ import com.iiex.cost_share_service.service.AuthService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -48,4 +53,16 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<?> login() {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, "/oauth2/authorize/google")
+                .build();
+    }
+
+    @GetMapping("/callback")
+    public ResponseEntity<?> callback(OAuth2AuthenticationToken authentication) {
+        CreateUserResponse response = authService.login(authentication);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 }

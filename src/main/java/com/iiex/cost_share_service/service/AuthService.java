@@ -2,6 +2,7 @@ package com.iiex.cost_share_service.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ import com.iiex.cost_share_service.exception.OtpValidationException;
 import com.iiex.cost_share_service.repository.OtpRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
 import com.iiex.cost_share_service.security.jwt.JwtUtils;
+import com.iiex.cost_share_service.utils.enums.AppRole;
 import com.iiex.cost_share_service.utils.enums.VerifyType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 @Service
 public class AuthService {
@@ -104,6 +107,7 @@ public class AuthService {
             user.setUsername(request.getUsername());
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
+            user.setRole(AppRole.USER.name());
             userRepository.save(user);
             otpRepository.delete(otp);
             Authentication authentication = authorizationManager
@@ -115,11 +119,24 @@ public class AuthService {
     }
 
     public CreateUserResponse login(LoginRequest request) {
-
         Authentication authentication = authorizationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         String token = jwtUtils.generateTokenForUser(authentication);
         return new CreateUserResponse(token);
     }
 
+    public CreateUserResponse login(OAuth2AuthenticationToken authentication) {
+        Map<String, Object> attributes = authentication.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        String userId = (String) attributes.get("sub");
+        String name = (String) attributes.get("name");
+        User user = new User();
+        user.setEmail(email);
+        user.setUsername(name);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setRole(AppRole.USER.name());
+        String token = jwtUtils.generateTokenForOAuthUser(email, userId);
+        return new CreateUserResponse(token);
+    }
 }

@@ -32,7 +32,7 @@ public class JwtUtils {
 
     public String generateTokenForUser(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
-        List<String> roles = userPrincipal.getAuthorities().stream()    
+        List<String> roles = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
 
         return Jwts.builder()
@@ -70,4 +70,13 @@ public class JwtUtils {
         }
     }
 
+    public String generateTokenForOAuthUser(String email, String userId) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("id", userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date().getTime() + expirationTime)))
+                .signWith(key())
+                .compact();
+    }
 }
