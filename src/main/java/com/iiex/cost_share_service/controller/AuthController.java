@@ -53,7 +53,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login/oauth2 ")
+    @GetMapping("/login/oauth2")
     public ResponseEntity<?> login() {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, "/oauth2/authorize/google")
