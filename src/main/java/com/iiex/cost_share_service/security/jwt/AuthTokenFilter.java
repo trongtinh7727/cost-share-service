@@ -59,7 +59,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassUrl(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        return requestURI.startsWith("/public") || requestURI.equals("/login") || requestURI.equals("/register");
+        return requestURI.startsWith("/public") || requestURI.equals("/api/auth");
     }
 
     private String parseJwt(HttpServletRequest request) {

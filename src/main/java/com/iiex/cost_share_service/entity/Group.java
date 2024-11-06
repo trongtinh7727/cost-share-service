@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Groups")
+@Table(name = "AppGroups")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Group {
     @Id
