@@ -80,4 +80,8 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/cost-share-api:latest
             docker stop cost-share-api || true
             docker rm cost-share-api || true
-            docker run -d --name cost-share-api -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/cost-share-api:latest
+            docker run -d --name cost-share-api -p 8080:8080 \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/cost-share-api:latest
+
