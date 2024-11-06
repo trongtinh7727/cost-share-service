@@ -53,14 +53,14 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login")
+    @GetMapping("/login/oauth2 ")
     public ResponseEntity<?> login() {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, "/oauth2/authorize/google")
                 .build();
     }
 
-    @GetMapping("/callback")
+    @GetMapping("/login/oauth2/code/google")
     public ResponseEntity<?> callback(OAuth2AuthenticationToken authentication) {
         CreateUserResponse response = authService.login(authentication);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
