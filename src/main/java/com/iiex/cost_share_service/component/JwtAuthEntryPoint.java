@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.security.jwt;
+package com.iiex.cost_share_service.component;
 
 import java.io.IOException;
 import java.util.HashMap;

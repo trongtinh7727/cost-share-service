@@ -1,6 +1,5 @@
 package com.iiex.cost_share_service.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ import com.iiex.cost_share_service.repository.GroupRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
 
 @Service
-public class ExpenseService {
+public class ExpenseService implements IExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
@@ -28,10 +27,12 @@ public class ExpenseService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public List<Expense> getExpensesByUserAndGroup(Long userId, Long groupId) {
         return expenseRepository.findByCreatedByAndGroup(userId, groupId);
     }
 
+    @Override
     public Expense createExpense(Expense expense, Long groupId, Long userId, Map<Long, Double> splits) {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -55,6 +56,7 @@ public class ExpenseService {
         return expenseRepository.save(savedExpense);
     }
 
+    @Override
     public List<Expense> getExpensesByGroup(Long groupId) {
         return expenseRepository.findByGroup(groupId);
     }

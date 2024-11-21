@@ -12,7 +12,5 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
     List<Otp> findByOtpAndVerifyType(String otp, VerifyType verifyType);
     List<Otp> findByIsVerifiedAndEmailAndVerifyType(Boolean isverified, String email, VerifyType verifyType);
 
-
-    @SuppressWarnings("null")
     void deleteById( Long id);
 }

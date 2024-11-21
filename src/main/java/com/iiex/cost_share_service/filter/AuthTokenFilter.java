@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.security.jwt;
+package com.iiex.cost_share_service.filter;
 
 import java.io.IOException;
 
@@ -10,7 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.iiex.cost_share_service.security.user.CustomUserDetailService;
+import com.iiex.cost_share_service.component.JwtUtils;
+import com.iiex.cost_share_service.config.CustomUserDetailService;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -50,7 +51,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             return;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Internal Server Error: " + e.getMessage());
+            response.getWriter().write("Internal Server Error: adasd " + e.getMessage());
             return;
         }
 

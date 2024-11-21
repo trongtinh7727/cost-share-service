@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.security.jwt;
+package com.iiex.cost_share_service.component;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.iiex.cost_share_service.security.user.CustomUserDetails;
+import com.iiex.cost_share_service.config.CustomUserDetails;
 
 import org.springframework.security.core.Authentication;
 
@@ -70,10 +70,10 @@ public class JwtUtils {
         }
     }
 
-    public String generateTokenForOAuthUser(String email, String userId) {
+    public String generateTokenForOAuthUser(String email, String username) {
         return Jwts.builder()
                 .setSubject(email)
-                .claim("id", userId)
+                .claim("name", username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date().getTime() + expirationTime)))
                 .signWith(key())

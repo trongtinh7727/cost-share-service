@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class GroupService {
+public class GroupService implements IGroupService {
 
     @Autowired
     private GroupRepository groupRepository;
@@ -25,10 +25,12 @@ public class GroupService {
     @Autowired
     private GroupMemberRepository groupMemberRepository;
 
+    @Override
     public List<Group> getAllGroups() {
         return groupRepository.findAll();
     }
 
+    @Override
     public Group createGroup(String groupName, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Group group = new Group();
@@ -38,18 +40,22 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
+    @Override
     public List<Group> getGroupsByUser(Long userId) {
         return groupRepository.findGroupsByUserId(userId);
     }
 
+    @Override
     public Group getGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElse(null);
     }
 
+    @Override
     public void deleteGroup(Long groupId) {
         groupRepository.deleteById(groupId);
     }
 
+    @Override
     public GroupMember addUserToGroupByEmail(Long groupId, String email) {
         // Tìm nhóm theo id
         Group group = groupRepository.findById(groupId)

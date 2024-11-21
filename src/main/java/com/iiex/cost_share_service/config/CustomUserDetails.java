@@ -1,4 +1,4 @@
-package com.iiex.cost_share_service.security.user;
+package com.iiex.cost_share_service.config;
 
 import java.util.Collection;
 import java.util.Collections;

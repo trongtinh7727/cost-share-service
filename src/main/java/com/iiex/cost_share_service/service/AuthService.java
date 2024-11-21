@@ -8,26 +8,28 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.iiex.cost_share_service.component.JwtUtils;
 import com.iiex.cost_share_service.dto.request.*;
-import com.iiex.cost_share_service.dto.response.ApiResponse;
 import com.iiex.cost_share_service.dto.response.CreateUserResponse;
+import com.iiex.cost_share_service.dto.response.ResponseVO;
 import com.iiex.cost_share_service.entity.Otp;
 import com.iiex.cost_share_service.entity.User;
 import com.iiex.cost_share_service.exception.OtpValidationException;
 import com.iiex.cost_share_service.repository.OtpRepository;
 import com.iiex.cost_share_service.repository.UserRepository;
-import com.iiex.cost_share_service.security.jwt.JwtUtils;
 import com.iiex.cost_share_service.utils.enums.AppRole;
 import com.iiex.cost_share_service.utils.enums.VerifyType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 @Service
-public class AuthService {
+public class AuthService implements IAuthService{
     @Autowired
     private OtpRepository otpRepository;
     @Autowired
@@ -52,7 +54,8 @@ public class AuthService {
         return String.valueOf(otpInt);
     }
 
-    public ApiResponse<?> createOtp(SendVerifyCodeRequest request) {
+    @Override
+    public ResponseVO<?> createOtp(SendVerifyCodeRequest request) {
         // Remove existing OTP if any
         List<Otp> existingOtps = otpRepository.findByEmailAndVerifyType(request.getEmail(), request.getVerifyType());
         existingOtps.forEach(otp -> otpRepository.deleteById(otp.getOtpId()));
@@ -66,10 +69,11 @@ public class AuthService {
         otpEntity.setVerifyType(request.getVerifyType());
         otpRepository.save(otpEntity);
         emailService.sendOtpEmail(request.getEmail(), otp);
-        return new ApiResponse<>("Sent OTP successfully. Please check your email for OTP.");
+        return  ResponseVO.success("Sent OTP successfully. Please check your email for OTP.");
     }
 
-    public ApiResponse<?> validateOtp(VerifyOTPRequest verifyOTPRequest) {
+    @Override
+    public ResponseVO<?> validateOtp(VerifyOTPRequest verifyOTPRequest) {
         List<Otp> otpList = otpRepository.findByEmailAndVerifyType(verifyOTPRequest.getEmail(),
                 verifyOTPRequest.getVerifyType());
         if (otpList.isEmpty()) {
@@ -86,11 +90,12 @@ public class AuthService {
             // OTP is valid; set verified to true
             otpEntity.setIsVerified(true);
             otpRepository.save(otpEntity);
-            return new ApiResponse<>("Successfully");
+            return ResponseVO.success("Successfully");
         }
     }
 
-    public CreateUserResponse createUser(CreateUserRequest request) {
+    @Override
+    public ResponseVO<?> createUser(CreateUserRequest request) {
         List<Otp> otpList = otpRepository.findByIsVerifiedAndEmailAndVerifyType(true, request.getEmail(),
                 VerifyType.Register);
         if (otpList.isEmpty()) {
@@ -114,10 +119,11 @@ public class AuthService {
                     .authenticate(
                             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
             String token = jwtUtils.generateTokenForUser(authentication);
-            return new CreateUserResponse(token);
+            return ResponseVO.success(token);
         }
     }
 
+    @Override
     public CreateUserResponse login(LoginRequest request) {
         Authentication authentication = authorizationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -125,6 +131,7 @@ public class AuthService {
         return new CreateUserResponse(token);
     }
 
+    @Override
     public CreateUserResponse login(OAuth2AuthenticationToken authentication) {
         Map<String, Object> attributes = authentication.getPrincipal().getAttributes();
         String email = (String) attributes.get("email");
@@ -136,6 +143,9 @@ public class AuthService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         user.setRole(AppRole.USER.name());
+        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(user, null,
+                AuthorityUtils.createAuthorityList("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         String token = jwtUtils.generateTokenForOAuthUser(email, userId);
         return new CreateUserResponse(token);
     }
